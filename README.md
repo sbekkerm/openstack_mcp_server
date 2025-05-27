@@ -73,3 +73,17 @@ podman run -d --name openstack_mcp_server \
   -v $(pwd)/clouds.yaml:/server/clouds.yaml:Z \
   localhost/openstack_mcp_server:latest
 ```
+
+# Examples
+
+<img src="examples/image.png" alt="Openstack MCP client"></img>
+
+## How to run the demo MCP client
+
+```bash
+cd examples/
+uv run osp_mcp_client.py --llm_api_url https://X.X.X.X/v1 \
+    --llm_api_key XXXX \
+    --model_name granite-3-8b-instruct \
+    --mcp_url http://X.X.X.X:9001/sse
+```
