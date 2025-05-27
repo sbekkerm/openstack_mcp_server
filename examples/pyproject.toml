@@ -1,0 +1,9 @@
+[project]
+name = "mcp-client"
+version = "0.1.0"
+description = "Demo Openstack MCP client"
+requires-python = ">=3.12"
+dependencies = [
+    "openai",
+    "openai-agents",
+]
