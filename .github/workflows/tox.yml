@@ -1,0 +1,21 @@
+name: Run tox
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  run_tox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Install tox
+        run: pip install tox
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Run tox
+        run: make tox
