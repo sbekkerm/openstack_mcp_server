@@ -59,7 +59,7 @@ async def mcp_client(llm_api_url: str, llm_api_key: str, model_name: str, mcp_ur
                                           run_config=run_config)
                 print(result.final_output)
         except OpenAIError as e:
-            print("LLM API error occurred while processing '%s': %s", message, e)
+            print(f"LLM API error occurred while processing '{message}': {e}")
 
 
 def main():
