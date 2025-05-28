@@ -1,6 +1,7 @@
 """Demo Openstack MCP client"""
 import asyncio
 import argparse
+from openai import OpenAIError
 from agents.mcp import MCPServerSse
 from agents.run import RunConfig
 from agents import Agent, Runner
@@ -51,11 +52,14 @@ async def mcp_client(llm_api_url: str, llm_api_key: str, model_name: str, mcp_ur
             "Which routers have been created?",
             "Are there any network agents running?"
         ]
-
-        for message in queries:
-            print(f"\n\nRunning: {message}")
-            result = await Runner.run(starting_agent=agent, input=message, run_config=run_config)
-            print(result.final_output)
+        try:
+            for message in queries:
+                print(f"\n\nRunning: {message}")
+                result = await Runner.run(starting_agent=agent, input=message,
+                                          run_config=run_config)
+                print(result.final_output)
+        except OpenAIError as e:
+            print("LLM API error occurred while processing '%s': %s", message, e)
 
 
 def main():
