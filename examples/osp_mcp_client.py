@@ -1,4 +1,5 @@
 """Demo Openstack MCP client"""
+import sys
 import asyncio
 import argparse
 from openai import OpenAIError
@@ -36,30 +37,17 @@ async def mcp_client(llm_api_url: str, llm_api_key: str, model_name: str, mcp_ur
             mcp_servers=[server],
             model_settings=ModelSettings(tool_choice="auto"),)
 
-        queries = [
-            "Are there flavors that supports GPU passthrough?",
-            "List all servers",
-            "List all networks",
-            "What's the network type for the `management` network?",
-            "Are there created keypairs?",
-            "What images are available?",
-            "What flavors exist?",
-            "What keypairs have been created?",
-            "What networks are available?",
-            "What subnets are defined?",
-            "What ports exist?",
-            "What security groups are present?",
-            "Which routers have been created?",
-            "Are there any network agents running?"
-        ]
-        try:
-            for message in queries:
+        while True:
+            try:
+                message = input("Prompt (Ctrl+C to exit): ").strip()
+                if not message:
+                    continue
                 print(f"\n\nRunning: {message}")
                 result = await Runner.run(starting_agent=agent, input=message,
                                           run_config=run_config)
-                print(result.final_output)
-        except OpenAIError as e:
-            print(f"LLM API error occurred while processing '{message}': {e}")
+                print(result.final_output + "\n")
+            except OpenAIError as e:
+                print(f"LLM API error occurred while processing '{message}': {e}")
 
 
 def main():
@@ -92,13 +80,16 @@ def main():
         help="MCP server URL")
 
     args = parser.parse_args()
-
-    asyncio.run(mcp_client(
-        llm_api_url=args.llm_api_url,
-        llm_api_key=args.llm_api_key,
-        model_name=args.model_name,
-        mcp_url=args.mcp_url,
-    ))
+    try:
+        asyncio.run(mcp_client(
+            llm_api_url=args.llm_api_url,
+            llm_api_key=args.llm_api_key,
+            model_name=args.model_name,
+            mcp_url=args.mcp_url,
+        ))
+    except KeyboardInterrupt:
+        print("\nExiting gracefully")
+        sys.exit(0)
 
 
 if __name__ == "__main__":
